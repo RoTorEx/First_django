@@ -10,7 +10,8 @@ class Women(models.Model):
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
     time_update = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
     is_published = models.BooleanField(default=True, verbose_name="Публикация")
-    cat = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name="Категории")
+    # related_nmae используется для альтернативного связанного запроса вместо c.women_set.all() - на c.get_posts.all()
+    cat = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name="Категории", related_name='get_posts')
 
     def __str__(self):
         return self.title
@@ -21,7 +22,8 @@ class Women(models.Model):
     class Meta:
         verbose_name = 'Известные женщины'
         verbose_name_plural = 'Известные женщины'
-        # Сортировку записей по дате их создания и по заголовку с помощью еще одного атрибута ordering
+        # Сортировку записей по дате их создания и по заголовку с помощью еще одного атрибута ordering.
+        # Необходимо закоммениторать для корректной работы - Women.objects.values('cat_id').annotate(Count('id'))
         ordering = ['-time_create', 'title']
 
 
