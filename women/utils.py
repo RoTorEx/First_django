@@ -8,21 +8,12 @@ menu = [{'title': "О сайте", 'url_name': 'about'},
         ]
 
 
-# class DataMixin:
-#     '''Метод и класс будет формировать нужный контекст по умолчанию.
-#     Избавляемся от дублирования кода к классах WomenHome, AddPage, ShowPost, WomenCategory'''
-#     def get_user_context(self, **kwargs):
-#         context = kwargs
-#         cats = Category.objects.all()  # Список категорий
-#         context['menu'] = menu
-#         context['cats'] = cats
-#         if 'cat_selected' not in context:  # Проверка, если ключ определяем, то он будет присутствовать
-#             context['cat_selected'] = 0  # Ключ
-#         return context
-
-
 class DataMixin:
+
     '''Переработаем класс, чтобы добавить статью видел только авторизированный пользователь'''
+
+    paginate_by = 3  # Количетво постов на одной странице
+
     def get_user_context(self, **kwargs):
         context = kwargs
         # cats = Category.objects.all()  # Список категорий

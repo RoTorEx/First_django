@@ -70,8 +70,48 @@
 
 <!-- Блок контента -->
 	<div class="content-text">
+
 {% block content %}
 {% endblock %}
+
+<!-- Метод has_other_pades вернёт True, если страниц больше чем одна, иначе False -->
+{% if page_obj.has_other_pages %}
+<nav class="list-pages">
+    <ul>
+
+        <!-- Кнопка для предущей страницы, с проверкой, а сущестует ли она?
+            Если has_previous возвращает True, тогда кнопку можно отобразить  -->
+        {% if page_obj.has_previous %}
+        <li class="page-num">
+            <a href="?page={{ page_obj.previous_page_number }}">&lt;</a>
+        </li>
+        {% endif %}
+
+        {% for p in paginator.page_range %}
+            {% if page_obj.number == p %}
+            <li class="page-num page-num-selected">{{ p }}</li>
+            <!-- Показывает количетсво достпуных страниц для просмотра: две слева и две справа через фильтр add,
+                потому что мы используем шаблоны, а не на уровне python программы,
+                потому и обязательно использованиефильтров -->
+            {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2  %}
+            <li class="page-num">
+                <a href="?page={{ p }}">{{ p }}</a>
+            </li>
+            {% endif %}
+        {% endfor %}
+
+        <!-- Кнопка для следующей страницы, с проверкой, а сущестует ли она?
+            Если has_next возвращает True, тогда кнопку можно отобразить  -->
+        {% if page_obj.has_next %}
+        <li class="page-num">
+            <a href="?page={{ page_obj.next_page_number }}">&gt;</a>
+        </li>
+        {% endif %}
+
+    </ul>
+</nav>
+{% endif %}
+
 	</div>
 <!-- Конец блока контента -->
 

@@ -12,7 +12,7 @@ class Women(models.Model):
     is_published = models.BooleanField(default=True, verbose_name="Публикация")
     # related_nmae используется для альтернативного связанного запроса вместо c.women_set.all() - на c.get_posts.all()
     # related_name='get_posts' - отключаем метод, чтобы не ломался сайт
-    cat = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name="Категории", related_name='get_posts')
+    cat = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name="Категории")
 
     def __str__(self):
         return self.title
@@ -43,4 +43,4 @@ class Category(models.Model):
         # verbose_name – это специальный атрибут, отвечающий за название модели.
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
-        ordering = ['id']
+        ordering = ['id']  # Если сортировка будет отключена, то будут возникать предупреждения

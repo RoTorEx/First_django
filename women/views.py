@@ -4,6 +4,7 @@ from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 from .models import *
 from .forms import *
@@ -17,8 +18,11 @@ menu = [{'title': "О сайте", 'url_name': 'about'},
         ]
 
 
+# В классe ListView уже представлена наследование к классу Paginator
 class WomenHome(DataMixin, ListView):  # Класс представления
+
     '''Заменили функцию index на класс представления'''
+
     model = Women  # Атрибут ссылается на модель, выбирает все записи из табоицы и пытается отобразить в виде списка
     template_name = 'women/index.html'
     context_object_name = 'posts'
@@ -38,7 +42,13 @@ class WomenHome(DataMixin, ListView):  # Класс представления
 # Для функций-представления следует использовать декоратор, чтобы запретить неавторизованным пользователям "О сайте"
 @login_required
 def about(request):
-    return render(request, 'women/about.html', {'menu': menu, 'title': 'О сайте'})
+    '''Пример использвоание класса Paginator в функции представления'''
+    contact_list = Women.objects.all()
+    paginator = Paginator(contact_list, 3)  # По 3 элемента спсика на каждой странице
+
+    page_number = request.GET.get('page')  # Принимает номер страницы
+    page_obj = paginator.get_page(page_number)  # Формирует объект-список элементов текущей страницы
+    return render(request, 'women/about.html', {'page_obj': page_obj, 'menu': menu, 'title': 'О сайте'})
 
 
 # LoginRequiredMixin - отвечает за логин пользователей
@@ -85,7 +95,9 @@ class ShowPost(DataMixin, DetailView):
 
 
 class WomenCategory(DataMixin, ListView):
+
     '''Класс представления для категорий'''
+
     model = Women  # Указываем модель
     template_name = 'women/index.html'  # Связываем с моделью
     context_object_name = 'posts'
