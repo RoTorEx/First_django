@@ -13,6 +13,7 @@ def get_categories(filter=None):
 
 
 @register.inclusion_tag('women/list_categories.html')
+# Шаблон для вывода категорий
 def show_categories(sort=None, cat_selected=0):
     if not sort:
         cats = Category.objects.all()

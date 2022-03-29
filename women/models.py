@@ -11,6 +11,7 @@ class Women(models.Model):
     time_update = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
     is_published = models.BooleanField(default=True, verbose_name="Публикация")
     # related_nmae используется для альтернативного связанного запроса вместо c.women_set.all() - на c.get_posts.all()
+    # related_name='get_posts' - отключаем метод, чтобы не ломался сайт
     cat = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name="Категории", related_name='get_posts')
 
     def __str__(self):

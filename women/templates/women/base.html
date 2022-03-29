@@ -40,7 +40,21 @@
 		<li><a href="{% url 'home' %}">Все категории</a></li>
 {% endif %}
 
-{% show_categories cat_selected=cat_selected %}
+<!-- {% show_categories cat_selected=cat_selected %} -->
+
+<!-- Строка ниже значит: если объект с, который является элементов коллекции cats имеет значение свойства больше нуля - 
+    это значит, что рубрика имеет хотя бы один пост, то тогда мы этот пост выводим -->
+
+{% for c in cats %}
+{% if c.women__count > 0 %}
+    {% if c.pk == cat_selected %}
+        <li class="selected">{{c.name}}</li>
+    {% else %}
+        <li><a href="{{ c.get_absolute_url }}">{{c.name}}</a></li>
+    {% endif %}
+{% endif %}
+{% endfor %}
+
 
 		<li class="share">
 		<p>Наш канал</p>
