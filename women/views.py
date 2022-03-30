@@ -39,7 +39,9 @@ class WomenHome(DataMixin, ListView):  # Класс представления
         return context
 
     def get_queryset(self):  # Метод будет показывать, только опубликованные статьи на сайте
-        return Women.objects.filter(is_published=True)
+        # return Women.objects.filter(is_published=True)  # Тут происходит выборка записей из таблицы Women
+        # Совместно с этими данными будут загружены и данные из иаблицы категорий
+        return Women.objects.filter(is_published=True).select_related('cat')
 
 
 # Для функций-представления следует использовать декоратор, чтобы запретить неавторизованным пользователям "О сайте"
@@ -108,14 +110,20 @@ class WomenCategory(DataMixin, ListView):
 
     def get_queryset(self):
         # Выберем только те категории, которые указаны в слаге, через kwargs получим словарь и через self берём словарь
-        return Women.objects.filter(cat__slug=self.kwargs['cat_slug'], is_published=True)
+        # Для оптимизации SQL запросов используем .select_related('cat')
+        return Women.objects.filter(cat__slug=self.kwargs['cat_slug'], is_published=True).select_related('cat')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         # Формируем контекст данных, которые уже сформированы базовым классом
         context = super().get_context_data(**kwargs)
-        # Берём первую запись из posts, и обращаемся к объекут, который берёт название
-        c_def = self.get_user_context(title='Категория - ' + str(context['posts'][0].cat),
-                                            cat_selected=context['posts'][0].cat_id)
+        # # Берём первую запись из posts, и обращаемся к объекут, который берёт название, тут бдут выполняться 2 запроса
+        # c_def = self.get_user_context(title='Категория - ' + str(context['posts'][0].cat),
+        #                                     cat_selected=context['posts'][0].cat_id)
+
+        # Оптимизированный SQL запрос
+        c = Category.objects.get(slug=self.kwargs['cat_slug'])
+        c_def = self.get_user_context(title='Категория - ' + str(c.name),
+                                            cat_selected=c.pk)
 
         return dict(list(context.items()) + list(c_def.items()))
 
