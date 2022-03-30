@@ -60,7 +60,8 @@ ROOT_URLCONF = 'coolsite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # Расширим стандартные шаблоны добавив путь
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Указываем путь для шаблона
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
