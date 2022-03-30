@@ -1,4 +1,5 @@
 from django.db.models import Count
+from django.core.cache import cache
 from .models import *
 
 menu = [{'title': "О сайте", 'url_name': 'about'},
@@ -17,7 +18,10 @@ class DataMixin:
         context = kwargs
         # cats = Category.objects.all()  # Список категорий
         # используется агрегирующая функция, и которая считает кол-во постов связанное с этой рубрикой
-        cats = Category.objects.annotate(Count('women'))
+        cats = cache.get('cats')
+        if not cats:
+            cats = Category.objects.annotate(Count('women'))
+            cache.set('cats', cats, 60)
 
         user_menu = menu.copy()  # Копия словаря сохраняется
         # Если пользователь не авторизован, смотри это через объект request. У которого есть объект user,

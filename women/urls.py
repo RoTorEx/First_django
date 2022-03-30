@@ -1,10 +1,12 @@
 from django.urls import path, re_path
+from django.views.decorators.cache import cache_page  # Импортируем декоратор для кэширования
 
 from .views import *
 
+'''Функции представления оборачиваются в декоратор cache_page, а для классов его необходимо тут указать'''
 urlpatterns = [
-    # СВязали класс представления с маршруторм на главную страницу
-    path('', WomenHome.as_view(), name='home'),
+    # Связали класс представления с маршруторм на главную страницу
+    path('', cache_page(60)(WomenHome.as_view()), name='home'),  # Время хранения кэша 1 минута. Кэщ главной страницы
     path('about/', about, name='about'),
     path('addpage/', AddPage.as_view(), name='add_page'),
     path('contact/', contact, name='contact'),
