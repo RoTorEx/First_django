@@ -22,8 +22,12 @@ from women.views import *
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('women.urls')),
+    path('admin/', admin.site.urls),  # Маршрут-обращение к админке сайта
+    path('women/', include('women.urls')),  # Предпочтительный вариант, вызывается функция include
+
+    # '''Такое указание маршрутов, вручную, нарушает принцип независимости'''
+    # path('women/', index),  # Определяем шаблон, и указываем ссылку на функцию, которая будет активизироваться запрос
+    # path('', include('women.urls')),  # Маршрут к главной странице
     path('captcha/', include('captcha.urls')),
 ]
 
